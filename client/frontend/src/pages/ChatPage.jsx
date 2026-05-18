@@ -36,7 +36,6 @@ export default function ChatPage() {
         activeCommunity={activeCommunity}
         onSelectCommunity={setActiveCommunity}
       />
-
       <ChannelSidebar
         rooms={rooms}
         activeRoom={activeRoom}
@@ -45,7 +44,6 @@ export default function ChatPage() {
         community={activeCommunity}
         token={token}
       />
-
       <main className="flex-1 flex overflow-hidden">
         {activeRoom ? (
           <>
