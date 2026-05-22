@@ -56,4 +56,15 @@ router.post("/community", protect, async (req, res) => {
   res.status(201).json(community);
 });
 
+// Get all communities for current user
+router.get("/communities", protect, async (req, res) => {
+  try {
+    const communities = await Community.find({ members: req.user.id })
+      .populate("members", "username avatar isOnline");
+    res.json(communities);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 export default router;

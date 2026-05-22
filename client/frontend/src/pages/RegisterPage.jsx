@@ -15,7 +15,7 @@ export default function RegisterPage() {
     setLoading(true);
     setError("");
     try {
-      await register(form.username, form.email, form.password);
+      await register(form);
     } catch (err) {
       setError(err.response?.data?.message || "Registration failed");
     } finally {

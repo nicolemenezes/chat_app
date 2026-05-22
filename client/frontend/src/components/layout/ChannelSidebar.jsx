@@ -12,9 +12,10 @@ export default function ChannelSidebar({ rooms, activeRoom, onSelectRoom, onRoom
   const [inviteCode, setInviteCode] = useState("");
   const [tab, setTab] = useState("channels"); // channels | dms
 
-  const dms = rooms.filter((r) => r.type === "dm");
-  const groups = rooms.filter((r) => r.type === "group");
-  const channels = rooms.filter((r) => r.type === "channel");
+  const safeRooms = Array.isArray(rooms) ? rooms : [];
+  const dms = safeRooms.filter((r) => r.type === "dm");
+  const groups = safeRooms.filter((r) => r.type === "group");
+  const channels = safeRooms.filter((r) => r.type === "channel");
 
   const createRoom = async (e) => {
     e.preventDefault();

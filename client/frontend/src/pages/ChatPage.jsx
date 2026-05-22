@@ -18,10 +18,13 @@ export default function ChatPage() {
 
   useEffect(() => {
     axios.get("/api/rooms", authHeader).then(({ data }) => {
-      setRooms(data);
-      if (data.length) setActiveRoom(data[0]);
+      const safeRooms = Array.isArray(data) ? data : [];
+      setRooms(safeRooms);
+      if (safeRooms.length) setActiveRoom(safeRooms[0]);
     });
-    axios.get("/api/communities", authHeader).then(({ data }) => setCommunities(data));
+    axios.get("/api/communities", authHeader)
+      .then(({ data }) => setCommunities(Array.isArray(data) ? data : []))
+      .catch(() => setCommunities([]));
   }, [token]);
 
   const handleRoomCreated = (room) => {

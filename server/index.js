@@ -10,22 +10,26 @@ import { initSocket } from "./socket/socketHandler.js";
 
 const app = express();
 const server = http.createServer(app);
+
 const io = new Server(server, {
-  cors: { origin: process.env.CLIENT_URL, credentials: true },
+  cors: {
+    origin: ["http://localhost:5173", "http://localhost:3000"],
+    credentials: true,
+  },
 });
 
-// Middleware
-app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
+app.use(cors({
+  origin: ["http://localhost:5173", "http://localhost:3000"],
+  credentials: true,
+}));
 app.use(express.json());
 
-// Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/rooms", roomRoutes);
+app.use("/api/communities", roomRoutes);
 
-// Socket
 initSocket(io);
 
-// DB + Server
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log("MongoDB Connected");
