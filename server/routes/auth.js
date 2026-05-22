@@ -2,6 +2,7 @@ import express from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
+import { protect } from "../middleware/auth.js";
 
 const router = express.Router();
 
@@ -29,6 +30,17 @@ router.post("/login", async (req, res) => {
     if (!user || !(await bcrypt.compare(password, user.password)))
       return res.status(401).json({ message: "Invalid credentials" });
     res.json({ token: signToken(user._id, user.username), user: { id: user._id, username: user.username, email } });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// GET /api/auth/user?username=nicole
+router.get("/user", protect, async (req, res) => {
+  try {
+    const user = await User.findOne({ username: req.query.username }).select("-password");
+    if (!user) return res.status(404).json({ message: "User not found" });
+    res.json(user);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
