@@ -4,6 +4,8 @@ import { useAuth } from "../../context/AuthContext";
 import UserBar from "./UserBar";
 import Avatar from "../ui/Avatar";
 
+const API_BASE = "http://localhost:9000";
+
 export default function ChannelSidebar({ rooms, activeRoom, onSelectRoom, onRoomCreated, token }) {
   const { user, logout } = useAuth();
   const [showModal, setShowModal] = useState(false);
@@ -41,30 +43,44 @@ export default function ChannelSidebar({ rooms, activeRoom, onSelectRoom, onRoom
     setLoading(true);
     setError("");
     try {
+      const requestUrl = `${API_BASE}/api/rooms`;
       let data;
       if (modalType === "dm") {
         // Find user by username first
-        const { data: foundUser } = await axios.get(
-          `/api/auth/user?username=${dmUsername.trim()}`,
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-        const res = await axios.post(
-          "/api/rooms",
-          { type: "dm", members: [foundUser._id], name: "" },
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
+        const userLookupUrl = `${API_BASE}/api/auth/user?username=${dmUsername.trim()}`;
+        console.log("DM lookup URL:", userLookupUrl);
+        const { data: foundUser } = await axios.get(userLookupUrl, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const payload = { type: "dm", members: [foundUser._id], name: "" };
+        console.log("DM request URL:", requestUrl);
+        console.log("DM request payload:", payload);
+        const res = await axios.post(requestUrl, payload, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        console.log("DM response status:", res.status);
+        console.log("DM response data:", res.data);
         data = res.data;
       } else {
-        const res = await axios.post(
-          "/api/rooms",
-          { type: modalType, members: [], name: roomName.trim() },
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
+        const payload = { type: modalType, members: [], name: roomName.trim() };
+        console.log("Group/create request URL:", requestUrl);
+        console.log("Group/create request payload:", payload);
+        const res = await axios.post(requestUrl, payload, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        console.log("Group/create response status:", res.status);
+        console.log("Group/create response data:", res.data);
         data = res.data;
       }
       onRoomCreated(data);
       setShowModal(false);
     } catch (err) {
+      console.error("createRoom error:", {
+        message: err.message,
+        status: err.response?.status,
+        data: err.response?.data,
+        url: err.config?.url,
+      });
       setError(err.response?.data?.message || "Failed to create. Try again.");
     } finally {
       setLoading(false);
