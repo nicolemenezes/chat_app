@@ -74,10 +74,23 @@ router.get("/:roomId/members", protect, async (req, res) => {
 
 // Get message history
 router.get("/:roomId/messages", protect, async (req, res) => {
+  console.log("[rooms:messages] request received", {
+    roomId: req.params.roomId,
+    userId: req.user.id,
+    params: req.params,
+    body: req.body,
+  });
+
   const messages = await Message.find({ room: req.params.roomId })
     .populate("sender", "username avatar")
     .sort({ createdAt: 1 })
     .limit(50);
+
+  console.log("[rooms:messages] response", {
+    roomId: req.params.roomId,
+    count: Array.isArray(messages) ? messages.length : null,
+  });
+
   res.json(messages);
 });
 
