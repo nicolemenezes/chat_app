@@ -6,6 +6,11 @@ import Avatar from "../ui/Avatar";
 
 const API_BASE = "http://localhost:9000";
 
+function normalizeInviteCode(value) {
+  if (typeof value !== "string") return "";
+  return value.trim().replace(/^.*\/join\//, "").replace(/\/$/, "");
+}
+
 export default function ChannelSidebar({ rooms, activeRoom, onSelectRoom, onRoomCreated, token }) {
   const { user, logout } = useAuth();
   const [showModal, setShowModal] = useState(false);
@@ -89,11 +94,17 @@ export default function ChannelSidebar({ rooms, activeRoom, onSelectRoom, onRoom
 
   const joinByCode = async (e) => {
     e.preventDefault();
-    if (!inviteCode.trim()) return;
+    const normalizedCode = normalizeInviteCode(inviteCode);
+    if (!normalizedCode) return;
     try {
+      console.log("[ChannelSidebar] join request", {
+        rawInviteCode: inviteCode,
+        normalizedCode,
+        apiUrl: `${API_BASE}/api/rooms/join/${normalizedCode}`,
+      });
       const { data } = await axios.post(
-        `/api/rooms/join/${inviteCode.trim()}`,
-        {},
+        `${API_BASE}/api/rooms/join/${normalizedCode}`,
+        { inviteCode: normalizedCode },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       onRoomCreated(data);
