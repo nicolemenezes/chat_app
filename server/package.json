@@ -1,7 +1,7 @@
 {
-  "name": "chatbox",
+  "name": "connectico-server",
   "version": "1.0.0",
-  "description": "chatbox project",
+  "description": "Connectico server",
   "type":"module",
   "main": "index.js",
   "scripts": {

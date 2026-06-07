@@ -28,7 +28,10 @@ export default function ChatPage() {
   }, [token]);
 
   const handleRoomCreated = (room) => {
-    setRooms((prev) => [...prev, room]);
+    setRooms((prev) => {
+      const next = prev.filter((existingRoom) => existingRoom._id !== room._id);
+      return [...next, room];
+    });
     setActiveRoom(room);
   };
 

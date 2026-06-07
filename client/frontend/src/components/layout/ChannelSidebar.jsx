@@ -51,11 +51,21 @@ export default function ChannelSidebar({ rooms, activeRoom, onSelectRoom, onRoom
       const requestUrl = `${API_BASE}/api/rooms`;
       let data;
       if (modalType === "dm") {
+        const searchedUsername = dmUsername.trim();
+        if (!searchedUsername) {
+          setError("Username is required.");
+          return;
+        }
+
         // Find user by username first
-        const userLookupUrl = `${API_BASE}/api/auth/user?username=${dmUsername.trim()}`;
-        console.log("DM lookup URL:", userLookupUrl);
+        const userLookupUrl = `${API_BASE}/api/auth/user?username=${searchedUsername}`;
+        console.log("[ChannelSidebar] searched username", { searchedUsername, userLookupUrl });
         const { data: foundUser } = await axios.get(userLookupUrl, {
           headers: { Authorization: `Bearer ${token}` },
+        });
+        console.log("[ChannelSidebar] user lookup result", {
+          searchedUsername,
+          foundUser,
         });
         const payload = { type: "dm", members: [foundUser._id], name: "" };
         console.log("DM request URL:", requestUrl);
@@ -120,7 +130,7 @@ export default function ChannelSidebar({ rooms, activeRoom, onSelectRoom, onRoom
       ? room.members?.find((m) => m._id !== user?.id)
       : null;
     const displayName = room.type === "dm"
-      ? (otherMember?.username || "Direct Message")
+      ? (otherMember?.username || room.name || "Direct Message")
       : room.name;
 
     return (
@@ -171,7 +181,7 @@ export default function ChannelSidebar({ rooms, activeRoom, onSelectRoom, onRoom
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3.5 border-b border-white/5
                       cursor-pointer hover:bg-[#35373c] transition-colors">
-        <span className="font-semibold text-[15px] text-white truncate">DevSpace</span>
+        <span className="font-semibold text-[15px] text-white truncate">Connectico</span>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
           strokeWidth="2" className="text-[#b5bac1] flex-shrink-0">
           <path d="M6 9l6 6 6-6"/>

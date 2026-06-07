@@ -27,7 +27,7 @@ export default function RegisterPage() {
     <div className="min-h-screen bg-[#313338] flex items-center justify-center p-4">
       <div className="bg-[#2b2d31] rounded-xl p-8 w-full max-w-md shadow-xl">
         <h1 className="text-2xl font-semibold text-white text-center mb-1">Create an account</h1>
-        <p className="text-[#b5bac1] text-sm text-center mb-6">Join DevSpace today</p>
+        <p className="text-[#b5bac1] text-sm text-center mb-6">Join Connectico today</p>
 
         {error && (
           <div className="bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-4 py-2 rounded-lg mb-4">
