@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Avatar from "../ui/Avatar";
 
+const API_BASE = import.meta.env.VITE_API_URL;
+
 function normalizeMembers(value, fallback = []) {
   if (Array.isArray(value)) return value;
   if (Array.isArray(value?.members)) return value.members;
@@ -15,7 +17,7 @@ export default function MembersPanel({ room, token }) {
     if (!room?._id) return;
 
     axios
-      .get(`/api/rooms/${room._id}/members`, {
+      .get(`${API_BASE}/api/rooms/${room._id}/members`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then(({ data }) => {

@@ -16,7 +16,7 @@ export const SocketProvider = ({ children, token }) => {
       socketRef.current.disconnect();
     }
 
-    const socket = io("http://localhost:9000", {
+    const socket = io(import.meta.env.VITE_API_URL, {
       auth: { token },
       transports: ["websocket", "polling"],
       reconnection: true,

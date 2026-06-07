@@ -6,6 +6,8 @@ import ChannelSidebar from "../components/layout/ChannelSidebar";
 import MembersPanel from "../components/layout/MembersPanel";
 import ChatWindow from "../components/chat/ChatWindow";
 
+const API_BASE = import.meta.env.VITE_API_URL;
+
 export default function ChatPage() {
   const { token } = useAuth();
   const [rooms, setRooms] = useState([]);
@@ -17,12 +19,12 @@ export default function ChatPage() {
   const authHeader = { headers: { Authorization: `Bearer ${token}` } };
 
   useEffect(() => {
-    axios.get("/api/rooms", authHeader).then(({ data }) => {
+    axios.get(`${API_BASE}/api/rooms`, authHeader).then(({ data }) => {
       const safeRooms = Array.isArray(data) ? data : [];
       setRooms(safeRooms);
       if (safeRooms.length) setActiveRoom(safeRooms[0]);
     });
-    axios.get("/api/communities", authHeader)
+    axios.get(`${API_BASE}/api/communities`, authHeader)
       .then(({ data }) => setCommunities(Array.isArray(data) ? data : []))
       .catch(() => setCommunities([]));
   }, [token]);

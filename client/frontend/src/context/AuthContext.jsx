@@ -2,7 +2,7 @@ import { createContext, useContext, useState } from "react";
 import axios from "axios";
 
 const AuthContext = createContext(null);
-const API_BASE = "http://localhost:9000";
+const API_BASE = import.meta.env.VITE_API_URL;
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => JSON.parse(localStorage.getItem("user")));
